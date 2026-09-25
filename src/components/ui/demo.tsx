@@ -5,9 +5,8 @@
 // this file — see `src/components/Hero.astro`, which composes the same pieces as
 // Astro islands so the <h1> stays server-rendered.
 //
-// Deviation from the upstream snippet: the upstream passes `fill="white"` to
-// <Spotlight />, but this Spotlight's props are { className, size, springOptions }
-// — there is no `fill`. Passing it is a TypeScript error, so it is omitted.
+// `fill` is supported: spotlight.tsx was extended with a `fill` prop, because the
+// upstream snippet passed one that the supplied component did not accept.
 
 import { SplineScene } from '@/components/ui/splite'
 import { Card } from '@/components/ui/card'
@@ -16,7 +15,7 @@ import { Spotlight } from '@/components/ui/spotlight'
 export function SplineSceneBasic() {
   return (
     <Card className="w-full h-[500px] bg-black/[0.96] relative overflow-hidden">
-      <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" />
+      <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
 
       <div className="flex h-full">
         {/* Left content */}

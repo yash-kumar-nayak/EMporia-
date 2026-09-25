@@ -10,7 +10,12 @@ import { Spotlight } from './ui/spotlight';
 ---
 
 <section class="hero-dark relative overflow-hidden bg-ink">
-  <Spotlight client:idle className="-top-40 left-0 md:left-60 md:-top-20" />
+  <Spotlight
+    client:idle
+    size={560}
+    fill="white"
+    className="opacity-45"
+  />
   <div class="container-x grid items-center gap-12 py-20 lg:grid-cols-2">
     <div>
       <p class="eyebrow text-brand-sky">Digital marketing · {site.city}</p>

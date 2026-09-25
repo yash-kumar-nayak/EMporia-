@@ -7,6 +7,8 @@ type SpotlightProps = {
   className?: string;
   size?: number;
   springOptions?: SpringOptions;
+  /** Core colour of the glow. Any CSS colour. */
+  fill?: string;
 };
 
 /**
@@ -46,6 +48,7 @@ export function Spotlight({
   className,
   size = 200,
   springOptions = { bounce: 0 },
+  fill = 'white',
 }: SpotlightProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [parentElement, setParentElement] = useState<HTMLElement | null>(null);
@@ -97,12 +100,18 @@ export function Spotlight({
     <motion.div
       ref={containerRef}
       className={cn(
-        'pointer-events-none absolute rounded-full bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops),transparent_80%)] blur-xl transition-opacity duration-200',
-        'from-zinc-50 via-zinc-100 to-zinc-200',
+        // NOTE: the gradient is an inline style, not Tailwind gradient-stop
+        // utilities. The upstream component used
+        // bg-[radial-gradient(...,var(--tw-gradient-stops),...)] with from-/via-/to-,
+        // which only works in Tailwind v3. This project is on v4, where those
+        // utilities no longer populate --tw-gradient-stops on their own, so the
+        // glow rendered fully transparent.
+        'pointer-events-none absolute rounded-full blur-2xl transition-opacity duration-200',
         isHovered ? 'opacity-100' : 'opacity-0',
         className
       )}
       style={{
+        background: `radial-gradient(circle at center, ${fill} 0%, ${fill} 15%, transparent 70%)`,
         width: size,
         height: size,
         left: spotlightLeft,
