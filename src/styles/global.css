@@ -19,6 +19,11 @@
   --color-good-tint: #e9f7ef;
   --color-warn: #a15c00;
   --color-warn-tint: #fff5e5;
+
+  --color-border: #e6e9ef;
+  --color-card: #ffffff;
+  --color-card-foreground: #0b1220;
+  --color-muted-foreground: #6b7486;
 }
 
 @layer base {
