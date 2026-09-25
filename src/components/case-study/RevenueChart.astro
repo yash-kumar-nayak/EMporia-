@@ -1,0 +1,102 @@
+---
+import { formatINR, formatMonth } from '../../lib/url';
+
+interface Props {
+  label: string;
+  source: string;
+  startedMonth: string;
+  series: { month: string; value: number }[];
+}
+const { label, source, startedMonth, series } = Astro.props;
+
+const W = 720;
+const H = 300;
+const pad = { top: 20, right: 12, bottom: 34, left: 64 };
+const innerW = W - pad.left - pad.right;
+const innerH = H - pad.top - pad.bottom;
+
+const max = Math.max(...series.map((d) => d.value));
+const step = (() => {
+  const raw = max / 4;
+  const mag = 10 ** Math.floor(Math.log10(raw));
+  return [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => s >= raw)!;
+})();
+const top = Math.ceil(max / step) * step;
+const ticks = Array.from({ length: Math.round(top / step) + 1 }, (_, i) => i * step);
+
+const slot = innerW / series.length;
+const barW = Math.min(36, slot * 0.62);
+const y = (v: number) => pad.top + innerH - (v / top) * innerH;
+const startIndex = series.findIndex((d) => d.month >= startedMonth);
+const labelEvery = series.length > 12 ? 2 : 1;
+
+const first = series[0];
+const last = series[series.length - 1];
+const baseline = startIndex > 0 ? series[startIndex - 1] : first;
+---
+
+<figure class="card overflow-hidden">
+  <figcaption class="flex flex-wrap items-baseline justify-between gap-2 border-b border-line px-5 py-4">
+    <span class="font-semibold">{label}</span>
+    <span class="text-xs text-muted">Source: {source}</span>
+  </figcaption>
+  <div class="px-2 pt-4 pb-2 sm:px-4">
+    <svg viewBox={`0 0 ${W} ${H}`} class="h-auto w-full" role="img" aria-label={`${label} from ${formatMonth(first.month)} to ${formatMonth(last.month)}: ${formatINR(baseline.value)} before Emporia, ${formatINR(last.value)} in the latest month.`}>
+      {
+        ticks.map((t) => (
+          <g>
+            <line x1={pad.left} x2={W - pad.right} y1={y(t)} y2={y(t)} stroke="#e6e9ef" stroke-dasharray={t === 0 ? undefined : '3 4'} />
+            <text x={pad.left - 10} y={y(t) + 4} text-anchor="end" font-size="11" fill="#6b7486">{formatINR(t)}</text>
+          </g>
+        ))
+      }
+      {
+        startIndex > 0 && (
+          <g>
+            <line x1={pad.left + slot * startIndex} x2={pad.left + slot * startIndex} y1={pad.top - 6} y2={pad.top + innerH} stroke="#0b1220" stroke-width="1.2" stroke-dasharray="4 3" />
+            <text x={pad.left + slot * startIndex + 6} y={pad.top + 4} font-size="11" font-weight="600" fill="#0b1220">Emporia starts</text>
+          </g>
+        )
+      }
+      {
+        series.map((d, i) => {
+          const x = pad.left + slot * i + (slot - barW) / 2;
+          const after = startIndex >= 0 && i >= startIndex;
+          return (
+            <g>
+              <rect x={x} y={y(d.value)} width={barW} height={pad.top + innerH - y(d.value)} rx="3" fill={after ? '#0a4bdb' : '#c9cfda'}>
+                <title>{`${formatMonth(d.month)}: ${formatINR(d.value)}`}</title>
+              </rect>
+              {i % labelEvery === 0 && (
+                <text x={x + barW / 2} y={H - 12} text-anchor="middle" font-size="11" fill="#6b7486">
+                  {formatMonth(d.month).replace(' 20', " '")}
+                </text>
+              )}
+            </g>
+          );
+        })
+      }
+    </svg>
+  </div>
+  <details class="group border-t border-line">
+    <summary class="flex cursor-pointer list-none items-center justify-between px-5 py-3 text-sm font-medium text-ink-soft hover:text-ink">
+      See the raw monthly numbers
+      <span class="text-muted transition-transform group-open:rotate-45">+</span>
+    </summary>
+    <div class="overflow-x-auto px-5 pb-4">
+      <table class="num w-full text-sm">
+        <thead><tr class="border-b border-line text-left text-muted"><th class="py-2 font-medium">Month</th><th class="py-2 text-right font-medium">{label}</th></tr></thead>
+        <tbody>
+          {
+            series.map((d, i) => (
+              <tr class="border-b border-line/60 last:border-0">
+                <td class="py-1.5">{formatMonth(d.month)}{i === startIndex && <span class="ml-2 rounded bg-brand-tint px-1.5 py-0.5 text-xs font-medium text-brand">Emporia starts</span>}</td>
+                <td class="py-1.5 text-right">₹{d.value.toLocaleString('en-IN')}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </details>
+</figure>

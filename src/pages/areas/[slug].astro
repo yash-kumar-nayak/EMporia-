@@ -1,0 +1,45 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import CTA from '../../components/CTA.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import CaseStudyCard from '../../components/case-study/CaseStudyCard.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('areas');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const local = (await getCollection('caseStudies')).filter((c) => c.data.location.includes(entry.data.name)).slice(0, 3);
+---
+
+<Base title={entry.data.title} description={entry.data.description}>
+  <section class="container-x pt-14 pb-10">
+    <p class="eyebrow">{entry.data.name}</p>
+    <h1 class="mt-3 max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl">{entry.data.title}</h1>
+    <p class="mt-5 max-w-2xl text-lg text-ink-soft">{entry.data.description}</p>
+    {
+      entry.data.nearby.length > 0 && (
+        <p class="mt-6 text-sm text-muted">Serving {entry.data.nearby.join(', ')} and nearby.</p>
+      )
+    }
+  </section>
+
+  <section class="container-x grid gap-12 lg:grid-cols-[1fr_1fr]">
+    <div class="prose-emporia"><Content /></div>
+    <div class="lg:sticky lg:top-24 lg:self-start"><LeadForm id="area-lead" compact /></div>
+  </section>
+
+  {
+    local.length > 0 && (
+      <section class="container-x mt-20">
+        <h2 class="text-2xl font-bold tracking-tight">Results in {entry.data.name}</h2>
+        <div class="mt-8 grid gap-5 md:grid-cols-3">{local.map((e) => <CaseStudyCard entry={e} />)}</div>
+      </section>
+    )
+  }
+
+  <div class="mt-24"><CTA /></div>
+</Base>

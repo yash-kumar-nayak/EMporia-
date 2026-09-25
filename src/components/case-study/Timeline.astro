@@ -1,0 +1,19 @@
+---
+interface Props {
+  steps: { when: string; title: string; detail: string }[];
+}
+const { steps } = Astro.props;
+---
+
+<ol class="relative space-y-8 border-l border-line pl-6">
+  {
+    steps.map((s) => (
+      <li class="relative">
+        <span class="absolute top-1.5 -left-[31px] size-3 rounded-full border-2 border-white bg-brand ring-1 ring-brand/30" />
+        <p class="eyebrow">{s.when}</p>
+        <h3 class="mt-1 font-bold">{s.title}</h3>
+        <p class="mt-1 text-ink-soft">{s.detail}</p>
+      </li>
+    ))
+  }
+</ol>

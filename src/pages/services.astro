@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import CTA from '../components/CTA.astro';
+import { site, services } from '../config/site';
+import { url } from '../lib/url';
+---
+
+<Base title="Services" description={`Local SEO, Google Business Profile, ads, social media and websites for ${site.city} businesses — measured on calls, walk-ins and revenue.`}>
+  <section class="container-x pt-14 pb-12">
+    <p class="eyebrow">Services</p>
+    <h1 class="mt-3 max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl">Everything we do is measured in customers.</h1>
+    <p class="mt-5 max-w-2xl text-lg text-ink-soft">
+      We don't sell packages of posts or clicks. We start with what you want more of — calls, walk-ins, admissions, orders — and pick the services that get you there.
+    </p>
+  </section>
+
+  <section class="container-x space-y-5">
+    {
+      services.map((s, i) => (
+        <div id={s.slug} class="card grid scroll-mt-24 gap-6 p-7 sm:p-9 md:grid-cols-[3rem_1fr_1fr]">
+          <p class="num text-sm font-bold text-brand">0{i + 1}</p>
+          <div>
+            <h2 class="text-2xl font-bold tracking-tight">{s.title}</h2>
+            <p class="mt-3 text-ink-soft">{s.summary}</p>
+          </div>
+          <ul class="space-y-2.5 self-center">
+            {s.points.map((p) => (
+              <li class="flex items-start gap-2 text-sm"><Icon name="check" class="mt-0.5 size-4 shrink-0 text-good" /> {p}</li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="container-x mt-16">
+    <div class="rounded-2xl border border-line bg-mist p-7 sm:p-9">
+      <h2 class="text-xl font-bold">Every service comes with the same monthly report</h2>
+      <p class="mt-2 max-w-2xl text-ink-soft">Where you started, where you are now, and the screenshot for each number — the same format as our <a href={url('/case-studies/')} class="font-medium text-brand underline underline-offset-2">case studies</a>.</p>
+    </div>
+  </section>
+
+  <div class="mt-24"><CTA title="Not sure where to start?" text="Tell us what you want more of. We'll look at your business for free and tell you which one or two things would move the needle first." /></div>
+</Base>

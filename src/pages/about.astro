@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import CTA from '../components/CTA.astro';
+import { site } from '../config/site';
+
+const values = [
+  { title: 'Show, don\'t claim', text: 'If we can\'t show the screenshot, we don\'t make the claim. That goes for this website and for your monthly report.' },
+  { title: 'Local first', text: `We work with businesses in ${site.city} and nearby. We know the areas, the searches and the competition.` },
+  { title: 'Plain language', text: 'No jargon, no vanity metrics. We talk about calls, walk-ins and revenue — the things you actually count.' },
+  { title: 'You own everything', text: 'Your Google profile, ad accounts, website and data stay in your name. Always.' },
+];
+
+// TODO: replace with the real team — names, roles and photos.
+const team = [
+  { name: 'Team member', role: 'Founder' },
+  { name: 'Team member', role: 'Local SEO lead' },
+  { name: 'Team member', role: 'Ads & analytics' },
+];
+---
+
+<Base title="About" description={`Emporia is a digital marketing agency in ${site.city}. We help local businesses grow — and we show the proof.`}>
+  <section class="container-x pt-14 pb-16">
+    <p class="eyebrow">About Emporia</p>
+    <h1 class="mt-3 max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl">A {site.city} agency built on proof.</h1>
+    <div class="mt-8 grid max-w-4xl gap-6 text-lg text-ink-soft md:grid-cols-2">
+      <p>Most local business owners have been burned by marketing that promised a lot and reported vanity numbers. We started Emporia to do it differently.</p>
+      <p>We focus on what brings customers through your door — Google Maps, search, reviews and targeted ads — and we report on it with the original numbers, every month.</p>
+    </div>
+  </section>
+
+  <section class="border-y border-line bg-mist py-16">
+    <div class="container-x">
+      <h2 class="text-3xl font-bold tracking-tight">How we work</h2>
+      <div class="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+        {
+          values.map((v) => (
+            <div>
+              <h3 class="font-bold">{v.title}</h3>
+              <p class="mt-2 text-ink-soft">{v.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="container-x py-16">
+    <h2 class="text-3xl font-bold tracking-tight">The team</h2>
+    <p class="mt-3 text-ink-soft">The people you'll actually talk to.</p>
+    <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        team.map((m) => (
+          <div class="card overflow-hidden">
+            <div class="aspect-[4/3] bg-mist" aria-hidden="true" />
+            <div class="p-5">
+              <p class="font-bold">{m.name}</p>
+              <p class="text-sm text-muted">{m.role}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <CTA />
+</Base>

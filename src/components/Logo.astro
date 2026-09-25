@@ -1,0 +1,15 @@
+---
+import { Image } from 'astro:assets';
+import mark from '../assets/brand/mark.png';
+import wordmark from '../assets/brand/wordmark.png';
+
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<span class:list={['inline-flex items-center gap-2', className]}>
+  <Image src={mark} alt="" width={32} height={30} class="h-7 w-auto" densities={[1, 2]} loading="eager" />
+  <Image src={wordmark} alt="Emporia" width={120} height={28} class="h-5 w-auto" densities={[1, 2]} loading="eager" />
+</span>

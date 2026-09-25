@@ -1,0 +1,34 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from '../Icon.astro';
+import { url, formatMonth } from '../../lib/url';
+
+interface Props {
+  entry: CollectionEntry<'caseStudies'>;
+}
+const { entry } = Astro.props;
+const d = entry.data;
+const lead = d.metrics[0];
+---
+
+<a href={url(`/case-studies/${entry.id}/`)} class="card group flex flex-col p-6 transition-shadow hover:shadow-lg hover:shadow-black/5" data-industry={d.industry}>
+  <div class="flex items-center justify-between gap-3 text-xs text-muted">
+    <span class="rounded-full bg-mist px-2.5 py-1 font-medium text-ink-soft">{d.industry}</span>
+    <span>{d.location}</span>
+  </div>
+  <p class="mt-5 text-sm font-semibold text-muted">{d.client}</p>
+  <h3 class="mt-1 text-xl leading-snug font-bold tracking-tight">{d.headline}</h3>
+  <div class="num mt-5 flex items-baseline gap-2 border-t border-line pt-4">
+    <span class="text-sm text-muted">{lead.label}:</span>
+    <span class="text-sm text-muted line-through">{lead.before}</span>
+    <span class="text-muted">→</span>
+    <span class="font-bold">{lead.after}</span>
+  </div>
+  <div class="mt-auto flex items-center justify-between pt-5 text-sm">
+    <span class="text-muted">{formatMonth(d.period.start)} – {formatMonth(d.period.end)}</span>
+    <span class="flex items-center gap-1 font-semibold text-brand">
+      Read case <Icon name="arrow" class="size-4 transition-transform group-hover:translate-x-0.5" />
+    </span>
+  </div>
+  {d.sample && <p class="mt-4 rounded-lg bg-warn-tint px-3 py-2 text-xs font-medium text-warn">Sample layout — real client data coming soon</p>}
+</a>

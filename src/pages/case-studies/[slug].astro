@@ -1,0 +1,139 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import CTA from '../../components/CTA.astro';
+import Metrics from '../../components/case-study/Metrics.astro';
+import RevenueChart from '../../components/case-study/RevenueChart.astro';
+import Evidence from '../../components/case-study/Evidence.astro';
+import Timeline from '../../components/case-study/Timeline.astro';
+import Testimonial from '../../components/case-study/Testimonial.astro';
+import { site } from '../../config/site';
+import { url, formatMonth } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('caseStudies');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const period = `${formatMonth(d.period.start)} – ${formatMonth(d.period.end)}`;
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: d.headline,
+    description: d.summary,
+    author: { '@type': 'Organization', name: site.name },
+    publisher: { '@type': 'Organization', name: site.name },
+    about: { '@type': 'Organization', name: d.client, url: d.clientUrl },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Case Studies', item: new URL(url('/case-studies/'), Astro.site).href },
+      { '@type': 'ListItem', position: 2, name: d.client },
+    ],
+  },
+];
+---
+
+<Base title={`${d.client} case study`} description={d.summary} noindex={d.sample} schema={schema}>
+  {
+    d.sample && (
+      <div class="border-b border-warn/20 bg-warn-tint">
+        <p class="container-x py-3 text-sm font-medium text-warn">
+          Sample layout. The numbers on this page are placeholders showing how real case studies will look — they are not a real client result.
+        </p>
+      </div>
+    )
+  }
+
+  <article>
+    <header class="container-x pt-12 pb-10">
+      <nav class="text-sm text-muted" aria-label="Breadcrumb">
+        <a href={url('/case-studies/')} class="hover:text-ink">Case studies</a> <span class="mx-1">/</span> <span class="text-ink">{d.client}</span>
+      </nav>
+      <div class="mt-8 flex items-center gap-3">
+        {d.logo && <Image src={d.logo} alt={`${d.client} logo`} height={40} class="h-10 w-auto" />}
+        <p class="font-semibold">{d.client}</p>
+        {
+          d.clientUrl && (
+            <a href={d.clientUrl} target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-sm text-brand hover:underline">
+              Visit <Icon name="external" class="size-3.5" />
+            </a>
+          )
+        }
+      </div>
+      <h1 class="mt-4 max-w-4xl text-4xl leading-[1.1] font-extrabold tracking-tight sm:text-5xl">{d.headline}</h1>
+      <p class="mt-5 max-w-3xl text-lg text-ink-soft">{d.summary}</p>
+
+      <dl class="mt-8 grid grid-cols-2 gap-4 border-y border-line py-5 text-sm sm:grid-cols-4">
+        <div><dt class="text-muted">Industry</dt><dd class="mt-1 font-medium">{d.industry}</dd></div>
+        <div><dt class="text-muted">Location</dt><dd class="mt-1 font-medium">{d.location}</dd></div>
+        <div><dt class="text-muted">Period</dt><dd class="mt-1 font-medium">{period}</dd></div>
+        <div><dt class="text-muted">Services</dt><dd class="mt-1 font-medium">{d.services.join(', ')}</dd></div>
+      </dl>
+    </header>
+
+    <section class="container-x" aria-labelledby="results">
+      <h2 id="results" class="sr-only">Results</h2>
+      <Metrics metrics={d.metrics} />
+      {d.revenue && <div class="mt-6"><RevenueChart {...d.revenue} /></div>}
+    </section>
+
+    <div class="container-x mt-16 grid gap-14 lg:grid-cols-[1fr_20rem]">
+      <div class="prose-emporia max-w-2xl">
+        <Content />
+      </div>
+      <aside class="space-y-4 lg:sticky lg:top-24 lg:self-start">
+        <div class="card p-5">
+          <div class="flex items-center gap-2 text-brand"><Icon name="shield" class="size-5" /><p class="text-sm font-semibold">How to read this case</p></div>
+          <ul class="mt-3 space-y-2 text-sm text-ink-soft">
+            <li>Each number shows its <strong class="text-ink">starting point</strong> and <strong class="text-ink">source</strong>.</li>
+            <li>Screenshots below are original. Anything hidden is listed under “Edits”.</li>
+            <li>The chart's raw monthly numbers are one click away.</li>
+          </ul>
+        </div>
+        {
+          d.reportPdf && (
+            <a href={url(d.reportPdf)} target="_blank" rel="noopener" class="card flex items-center gap-3 p-5 hover:border-ink">
+              <Icon name="file" class="size-6 text-brand" />
+              <span><span class="block font-semibold">Download the report</span><span class="block text-xs text-muted">PDF, sensitive details hidden</span></span>
+            </a>
+          )
+        }
+      </aside>
+    </div>
+
+    {
+      d.timeline.length > 0 && (
+        <section class="container-x mt-20" aria-labelledby="timeline">
+          <p class="eyebrow">Month by month</p>
+          <h2 id="timeline" class="mt-3 text-3xl font-bold tracking-tight">What we did, and when</h2>
+          <div class="mt-10 max-w-2xl"><Timeline steps={d.timeline} /></div>
+        </section>
+      )
+    }
+
+    {
+      d.evidence.length > 0 && (
+        <section class="container-x mt-20" aria-labelledby="evidence">
+          <p class="eyebrow">Evidence</p>
+          <h2 id="evidence" class="mt-3 text-3xl font-bold tracking-tight">The original numbers</h2>
+          <p class="mt-3 max-w-2xl text-ink-soft">Screenshots from the tools the client uses every day. Click any image to see it full size.</p>
+          <div class="mt-10"><Evidence items={d.evidence} /></div>
+        </section>
+      )
+    }
+
+    {d.testimonial && <section class="container-x mt-20"><Testimonial {...d.testimonial} /></section>}
+  </article>
+
+  <div class="mt-20"><CTA /></div>
+</Base>
