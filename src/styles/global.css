@@ -110,6 +110,13 @@
       border-right-color: rgba(255, 255, 255, 0.9);
     }
   }
+  /* The site-wide focus ring (outline-brand, #0a4bdb) measures only 2.71:1 on
+     the dark hero (#0b1220), below the 3:1 WCAG 2.4.11 / 1.4.11 threshold.
+     Scoped override for the dark hero only: brand-sky (#00c8f0) is 9.38:1. */
+  .hero-dark :focus-visible,
+  .hero-dark:focus-visible {
+    @apply outline-brand-sky;
+  }
 }
 
 @keyframes loader-spin {

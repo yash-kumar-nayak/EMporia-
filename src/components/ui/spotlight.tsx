@@ -9,14 +9,47 @@ type SpotlightProps = {
   springOptions?: SpringOptions;
 };
 
+/**
+ * Resolve the nearest ancestor that actually generates a box.
+ *
+ * Astro wraps every client island in `<astro-island>`, which its runtime styles
+ * as `display: contents`. Such an element has no box: setting position/overflow
+ * on it is a no-op, it never receives mouse events for its subtree layout, and
+ * `getBoundingClientRect()` returns a zero rect. So we walk up past any
+ * `display: contents` ancestor until we find a real box (in a plain React tree
+ * the immediate parent already is one, so the loop exits on the first step).
+ */
+function resolveBoxAncestor(element: HTMLElement | null): HTMLElement | null {
+  if (typeof window === 'undefined' || !element) return null;
+
+  let current: HTMLElement | null = element.parentElement;
+  while (current) {
+    // getComputedStyle on a detached node can return an empty style object (or
+    // throw in older engines); bail out rather than crash.
+    if (!current.isConnected) return null;
+
+    let display: string | undefined;
+    try {
+      display = window.getComputedStyle(current)?.display;
+    } catch {
+      return null;
+    }
+
+    if (display !== 'contents') return current;
+    current = current.parentElement;
+  }
+
+  return null;
+}
+
 export function Spotlight({
   className,
   size = 200,
   springOptions = { bounce: 0 },
 }: SpotlightProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
   const [parentElement, setParentElement] = useState<HTMLElement | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   const mouseX = useSpring(0, springOptions);
   const mouseY = useSpring(0, springOptions);
@@ -25,14 +58,12 @@ export function Spotlight({
   const spotlightTop = useTransform(mouseY, (y) => `${y - size / 2}px`);
 
   useEffect(() => {
-    if (containerRef.current) {
-      const parent = containerRef.current.parentElement;
-      if (parent) {
-        parent.style.position = 'relative';
-        parent.style.overflow = 'hidden';
-        setParentElement(parent);
-      }
-    }
+    const parent = resolveBoxAncestor(containerRef.current);
+    if (!parent) return;
+
+    parent.style.position = 'relative';
+    parent.style.overflow = 'hidden';
+    setParentElement(parent);
   }, []);
 
   const handleMouseMove = useCallback(
