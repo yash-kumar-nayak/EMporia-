@@ -19,6 +19,11 @@
   --color-good-tint: #e9f7ef;
   --color-warn: #a15c00;
   --color-warn-tint: #fff5e5;
+
+  --color-border: #e6e9ef;
+  --color-card: #ffffff;
+  --color-card-foreground: #0b1220;
+  --color-muted-foreground: #6b7486;
 }
 
 @layer base {
@@ -88,5 +93,89 @@
   }
   .prose-emporia a {
     @apply font-medium text-brand underline underline-offset-2;
+  }
+  .loader {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-top-color: rgba(255, 255, 255, 0.9);
+    animation: loader-spin 0.8s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .loader {
+      animation: none;
+      border-top-color: rgba(255, 255, 255, 0.25);
+      border-right-color: rgba(255, 255, 255, 0.9);
+    }
+  }
+  /* The site-wide focus ring (outline-brand, #0a4bdb) measures only 2.71:1 on
+     the dark hero (#0b1220), below the 3:1 WCAG 2.4.11 / 1.4.11 threshold.
+     Scoped override for the dark hero only: brand-sky (#00c8f0) is 9.38:1. */
+  .hero-dark :focus-visible,
+  .hero-dark:focus-visible {
+    @apply outline-brand-sky;
+  }
+}
+
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+
+  /* --- Scroll reveal ------------------------------------------------------
+     Content stays visible unless JS has armed the effect, so a failed script
+     never hides copy. Reveal.astro sets data-reveal-ready on <html>. */
+  .reveal {
+    --reveal-delay: 0ms;
+  }
+  [data-reveal-ready] .reveal {
+    opacity: 0;
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay);
+    will-change: opacity, transform;
+  }
+  [data-reveal-ready] .reveal-up {
+    transform: translateY(18px);
+  }
+  [data-reveal-ready] .reveal-left {
+    transform: translateX(-20px);
+  }
+  [data-reveal-ready] .reveal-right {
+    transform: translateX(20px);
+  }
+  [data-reveal-ready] .reveal-scale {
+    transform: scale(0.97);
+  }
+  [data-reveal-ready] .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Bars and rank markers grow only once their chart is revealed. */
+  .chart-grow {
+    transform-origin: left center;
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  [data-reveal-ready] .reveal:not(.is-visible) .chart-grow {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal-ready] .reveal,
+  [data-reveal-ready] .reveal.is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .chart-grow,
+  [data-reveal-ready] .reveal:not(.is-visible) .chart-grow {
+    transform: none !important;
+    transition: none !important;
   }
 }

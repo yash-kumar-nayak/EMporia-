@@ -1,15 +1,30 @@
 ---
 import { Image } from 'astro:assets';
-import mark from '../assets/brand/mark.png';
-import wordmark from '../assets/brand/wordmark.png';
+import mark from '../assets/brand/mark-alpha.png';
+import wordmark from '../assets/brand/wordmark-alpha.png';
+import wordmarkLight from '../assets/brand/wordmark-light.png';
 
 interface Props {
   class?: string;
+  /**
+   * Render for a dark background. The supplied brand PNGs were RGB with no alpha —
+   * an opaque white box that only looked correct on a white header — so `*-alpha`
+   * versions are used throughout and a white wordmark is swapped in here.
+   */
+  onDark?: boolean;
 }
-const { class: className = '' } = Astro.props;
+const { class: className = '', onDark = false } = Astro.props;
 ---
 
 <span class:list={['inline-flex items-center gap-2', className]}>
   <Image src={mark} alt="" width={32} height={30} class="h-7 w-auto" densities={[1, 2]} loading="eager" />
-  <Image src={wordmark} alt="Emporia" width={120} height={28} class="h-5 w-auto" densities={[1, 2]} loading="eager" />
+  <Image
+    src={onDark ? wordmarkLight : wordmark}
+    alt="Emporia"
+    width={120}
+    height={28}
+    class="h-5 w-auto"
+    densities={[1, 2]}
+    loading="eager"
+  />
 </span>

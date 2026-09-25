@@ -1,0 +1,72 @@
+---
+// NOTE: the Spline scene below is a public demo asset (prod.spline.design demo
+// scene), used as a placeholder. Swap it for an Emporia-branded scene before
+// launch.
+import { site } from '../config/site';
+import { url, whatsappLink } from '../lib/url';
+import Icon from './Icon.astro';
+import { SplineScene } from './ui/splite';
+import { Spotlight } from './ui/spotlight';
+
+// Self-hosted copy of the Spline demo scene (1.3MB). Served same-origin from the
+// Pages CDN instead of prod.spline.design: one less third-party dependency on the
+// critical path, no cross-origin DNS+TLS, and it cannot be blocked by an ISP.
+const SCENE = url('/spline/scene.splinecode');
+// Self-hosted runtime WASM. Keeps the runtime off unpkg.com, which is slow or
+// blocked on many Indian ISPs. Only bevel.wasm + process.wasm are needed by THIS
+// scene — a different scene may request others from @splinetool/runtime/build.
+const WASM = url('/spline/');
+---
+
+{/* Start the 1.3MB scene download during HTML parse, rather than waiting for the
+    island to hydrate first. */}
+<link rel="preload" as="fetch" href={SCENE} crossorigin />
+
+<section class="hero-dark relative flex min-h-svh items-center overflow-hidden bg-black">
+  <Spotlight client:idle size={620} fill="white" className="opacity-40" />
+
+  <div class="container-x grid w-full items-center gap-10 pt-28 pb-16 lg:grid-cols-[1.05fr_1fr] lg:gap-8">
+    <div>
+      <p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">
+        Digital marketing · {site.city}
+      </p>
+
+      <h1
+        class="mt-6 text-[2.6rem] leading-[1.02] font-semibold tracking-[-0.03em] text-white sm:text-6xl lg:text-[4.2rem]"
+      >
+        We don't say it.<br />
+        <span class="bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">We show you.</span>
+      </h1>
+
+      <p class="mt-7 max-w-md text-lg leading-relaxed text-white/50">
+        Local growth for {site.city} businesses — measured, and proven with the numbers behind it.
+      </p>
+
+      <p class="mt-6 inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.04] py-2 pr-5 pl-2.5 text-sm text-white/70">
+        <span class="rounded-full bg-good px-2.5 py-1 text-[0.7rem] font-bold tracking-wide text-white uppercase">Free</span>
+        We audit your website and Google listing — no charge, no commitment.
+      </p>
+
+      <div class="mt-10 flex flex-wrap items-center gap-3">
+        <a
+          href={url('/case-studies/')}
+          class="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-black transition-colors hover:bg-white/85"
+        >
+          See the proof <Icon name="arrow" class="size-4" />
+        </a>
+        <a
+          href={whatsappLink(site.auditMessage)}
+          target="_blank"
+          rel="noopener"
+          class="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition-colors hover:border-white/60 hover:text-white"
+        >
+          <Icon name="whatsapp" class="size-4" /> Get my free audit
+        </a>
+      </div>
+    </div>
+
+    <div class="h-[300px] lg:h-[560px]" aria-hidden="true">
+      <SplineScene client:visible scene={SCENE} wasmPath={WASM} className="h-full w-full" />
+    </div>
+  </div>
+</section>

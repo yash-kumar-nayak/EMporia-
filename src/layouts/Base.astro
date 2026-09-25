@@ -12,10 +12,12 @@ interface Props {
   description?: string;
   image?: string;
   noindex?: boolean;
+  /** Set on pages whose first section is designed to run under the floating nav. */
+  bleed?: boolean;
   schema?: Record<string, unknown>[];
 }
 
-const { title, description = site.description, image = '/og-default.png', noindex = false, schema = [] } = Astro.props;
+const { title, description = site.description, image = '/og-default.png', noindex = false, bleed = false, schema = [] } = Astro.props;
 const fullTitle = title === site.name ? `${site.name} — Digital Marketing Agency in ${site.city}` : `${title} | ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(url(image), Astro.site).href;
@@ -79,10 +81,37 @@ const business = {
   <body class="flex min-h-screen flex-col">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2">Skip to content</a>
     <Header />
-    <main id="main" class="flex-1">
+    <main id="main" class:list={['flex-1', !bleed && 'pt-20']}>
       <slot />
     </main>
     <Footer />
     <WhatsAppFloat />
-  </body>
+  
+<script>
+  // Scroll-reveal: content is visible until this runs, so a failed script never hides copy.
+  if (!document.documentElement.dataset.revealReady) {
+    document.documentElement.dataset.revealReady = 'true';
+    const start = () => {
+      const items = document.querySelectorAll<HTMLElement>('.reveal:not(.is-visible)');
+      if (!('IntersectionObserver' in window)) {
+        items.forEach((el) => el.classList.add('is-visible'));
+        return;
+      }
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            e.target.classList.add('is-visible');
+            io.unobserve(e.target);
+          }
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+      );
+      items.forEach((el) => io.observe(el));
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+    else start();
+  }
+</script>
+</body>
 </html>

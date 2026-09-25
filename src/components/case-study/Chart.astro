@@ -1,0 +1,154 @@
+---
+/**
+ * One chart, three shapes, no charting library — plain HTML/SVG plus CSS transitions,
+ * so a chart costs zero KB of JavaScript and prints correctly.
+ *
+ *  bars  — one value per row. Horizontal, because the labels are words (months, programmes).
+ *  ranks — a before/after pair per row, drawn as a dumbbell. Search positions, so the
+ *          axis is inverted: position 1 sits at the right-hand (good) end.
+ *  split — parts of a whole, as one stacked bar plus a legend.
+ */
+import Reveal from '../Reveal.astro';
+
+interface Row {
+  label: string;
+  value?: number;
+  before?: number;
+  after?: number;
+  note?: string;
+}
+interface Props {
+  type: 'bars' | 'ranks' | 'split';
+  title: string;
+  source: string;
+  note?: string;
+  unit?: string;
+  lowerIsBetter?: boolean;
+  data: Row[];
+}
+const { type, title, source, note, unit = '', data } = Astro.props;
+
+const nf = new Intl.NumberFormat('en-IN');
+const fmt = (n: number) => `${nf.format(n)}${unit}`;
+
+// --- bars -------------------------------------------------------------------
+const maxValue = Math.max(...data.map((d) => d.value ?? 0), 1);
+
+// --- ranks ------------------------------------------------------------------
+// Worst tracked position sets the scale. Anything beyond it is clamped so a single
+// rank-60 outlier cannot flatten the rest of the chart.
+const rankValues = data.flatMap((d) => [d.before, d.after].filter((v): v is number => typeof v === 'number'));
+const worstRank = Math.max(...rankValues, 10);
+/** position 1 -> 100% (right), worst -> 0% (left) */
+const rankPct = (r: number) => ((worstRank - r) / (worstRank - 1)) * 100;
+
+// --- split ------------------------------------------------------------------
+const total = data.reduce((sum, d) => sum + (d.value ?? 0), 0) || 1;
+const splitColors = ['bg-brand', 'bg-brand-sky', 'bg-good', 'bg-warn', 'bg-ink-soft'];
+---
+
+<figure class="not-prose my-10">
+  <Reveal>
+    <figcaption class="mb-1 text-sm font-bold tracking-tight text-ink">{title}</figcaption>
+    <p class="mb-5 text-xs text-muted">Source: {source}</p>
+  </Reveal>
+
+  {
+    type === 'bars' && (
+      <Reveal class="space-y-2.5">
+        {data.map((d, i) => (
+          <div class="grid grid-cols-[4.5rem_1fr_auto] items-center gap-3 sm:grid-cols-[7rem_1fr_auto]">
+            <span class="truncate text-xs font-medium text-ink-soft" title={d.label}>
+              {d.label}
+            </span>
+            <span class="h-6 rounded-md bg-mist">
+              <span
+                class="chart-grow block h-6 rounded-md bg-gradient-to-r from-brand to-brand-sky"
+                style={`width:${Math.max(((d.value ?? 0) / maxValue) * 100, 1.5)}%;--reveal-delay:${i * 45}ms`}
+              />
+            </span>
+            <span class="num text-xs font-bold tabular-nums text-ink">{fmt(d.value ?? 0)}</span>
+          </div>
+        ))}
+      </Reveal>
+    )
+  }
+
+  {
+    type === 'ranks' && (
+      <Reveal class="space-y-1">
+        <div class="mb-3 flex justify-between text-[0.65rem] font-semibold tracking-wider text-muted uppercase">
+          <span>Lower rank</span>
+          <span>Position 1</span>
+        </div>
+        {data.map((d, i) => {
+          const hasBoth = typeof d.before === 'number' && typeof d.after === 'number';
+          const improved = hasBoth && (d.after as number) < (d.before as number);
+          const a = typeof d.before === 'number' ? rankPct(d.before) : null;
+          const b = typeof d.after === 'number' ? rankPct(d.after) : null;
+          return (
+            <div class="group grid grid-cols-[1fr] gap-1 rounded-lg px-2 py-2 transition-colors hover:bg-mist sm:grid-cols-[minmax(0,15rem)_1fr] sm:items-center sm:gap-4">
+              <span class="truncate text-xs font-medium text-ink-soft" title={d.label}>
+                {d.label}
+              </span>
+              <span class="relative block h-6" style={`--reveal-delay:${i * 30}ms`}>
+                <span class="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-line" />
+                {hasBoth && (
+                  <span
+                    class={`absolute top-1/2 h-1 -translate-y-1/2 rounded-full ${improved ? 'bg-good' : 'bg-warn'}`}
+                    style={`left:${Math.min(a as number, b as number)}%;width:${Math.abs((b as number) - (a as number))}%`}
+                  />
+                )}
+                {a !== null && (
+                  <span
+                    class="absolute top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-muted"
+                    style={`left:${a}%`}
+                    title={`Before: ${d.before}`}
+                  />
+                )}
+                {b !== null && (
+                  <span
+                    class={`absolute top-1/2 size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white ${improved ? 'bg-good' : hasBoth ? 'bg-warn' : 'bg-brand'}`}
+                    style={`left:${b}%`}
+                    title={`After: ${d.after}`}
+                  />
+                )}
+                <span class="absolute -top-0.5 right-0 num text-[0.7rem] font-bold tabular-nums text-ink sm:hidden">
+                  {d.after}
+                </span>
+              </span>
+            </div>
+          );
+        })}
+      </Reveal>
+    )
+  }
+
+  {
+    type === 'split' && (
+      <Reveal>
+        <div class="flex h-9 w-full overflow-hidden rounded-lg bg-mist">
+          {data.map((d, i) => (
+            <span
+              class={`chart-grow block h-9 ${splitColors[i % splitColors.length]}`}
+              style={`width:${((d.value ?? 0) / total) * 100}%;--reveal-delay:${i * 70}ms`}
+              title={`${d.label}: ${fmt(d.value ?? 0)}`}
+            />
+          ))}
+        </div>
+        <ul class="mt-4 grid gap-2 sm:grid-cols-2">
+          {data.map((d, i) => (
+            <li class="flex items-baseline gap-2 text-sm">
+              <span class={`mt-1 size-2.5 shrink-0 rounded-full ${splitColors[i % splitColors.length]}`} />
+              <span class="text-ink-soft">{d.label}</span>
+              <span class="num ml-auto font-bold tabular-nums text-ink">{fmt(d.value ?? 0)}</span>
+              <span class="num w-11 text-right text-xs text-muted">{Math.round(((d.value ?? 0) / total) * 100)}%</span>
+            </li>
+          ))}
+        </ul>
+      </Reveal>
+    )
+  }
+
+  {note && <p class="mt-4 text-xs leading-relaxed text-muted">{note}</p>}
+</figure>
