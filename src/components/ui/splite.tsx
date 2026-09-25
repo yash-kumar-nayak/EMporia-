@@ -6,6 +6,9 @@ const Spline = lazy(() => import('@splinetool/react-spline'))
 interface SplineSceneProps {
   scene: string
   className?: string
+  /** Directory holding the runtime's .wasm files. Self-hosted so the runtime does
+   *  not reach for unpkg.com, which is slow or blocked on many Indian ISPs. */
+  wasmPath?: string
 }
 
 interface SceneErrorBoundaryProps {
@@ -40,7 +43,7 @@ class SceneErrorBoundary extends Component<SceneErrorBoundaryProps, SceneErrorBo
   }
 }
 
-export function SplineScene({ scene, className }: SplineSceneProps) {
+export function SplineScene({ scene, className, wasmPath }: SplineSceneProps) {
   return (
     <SceneErrorBoundary>
       <Suspense
@@ -50,7 +53,7 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
           </div>
         }
       >
-        <Spline scene={scene} className={className}>
+        <Spline scene={scene} className={className} wasmPath={wasmPath} renderOnDemand>
           {/* react-spline renders its children as its own loading placeholder
               ({isLoading && children}) while the ~1MB .splinecode downloads and
               the canvas is still display:none. Without this the spinner would

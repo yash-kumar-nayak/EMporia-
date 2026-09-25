@@ -7,52 +7,59 @@ import { url } from '../lib/url';
 import Icon from './Icon.astro';
 import { SplineScene } from './ui/splite';
 import { Spotlight } from './ui/spotlight';
+
+// Self-hosted copy of the Spline demo scene (1.3MB). Served same-origin from the
+// Pages CDN instead of prod.spline.design: one less third-party dependency on the
+// critical path, no cross-origin DNS+TLS, and it cannot be blocked by an ISP.
+const SCENE = url('/spline/scene.splinecode');
+// Self-hosted runtime WASM. Keeps the runtime off unpkg.com, which is slow or
+// blocked on many Indian ISPs. Only bevel.wasm + process.wasm are needed by THIS
+// scene — a different scene may request others from @splinetool/runtime/build.
+const WASM = url('/spline/');
 ---
 
-<section class="hero-dark relative overflow-hidden bg-ink">
-  <Spotlight
-    client:idle
-    size={560}
-    fill="white"
-    className="opacity-45"
-  />
-  <div class="container-x grid items-center gap-12 py-20 lg:grid-cols-2">
+{/* Start the 1.3MB scene download during HTML parse, rather than waiting for the
+    island to hydrate first. */}
+<link rel="preload" as="fetch" href={SCENE} crossorigin />
+
+<section class="hero-dark relative flex min-h-[calc(100svh-65px)] items-center overflow-hidden bg-black">
+  <Spotlight client:idle size={620} fill="white" className="opacity-40" />
+
+  <div class="container-x grid w-full items-center gap-10 py-16 lg:grid-cols-[1.05fr_1fr] lg:gap-8">
     <div>
-      <p class="eyebrow text-brand-sky">Digital marketing · {site.city}</p>
-      <h1 class="mt-4 text-4xl leading-[1.08] font-extrabold tracking-tight text-white sm:text-5xl lg:text-[3.4rem]">
-        We don't say we grow local businesses.{' '}
-        <span class="bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text text-transparent">We show you.</span>
-      </h1>
-      <p class="mt-6 max-w-xl text-lg text-neutral-300">
-        Emporia helps {site.city} businesses get found on Google and turn that visibility into calls, walk-ins and revenue. Every result on this site comes with the original numbers behind it.
+      <p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">
+        Digital marketing · {site.city}
       </p>
-      <div class="mt-8 flex flex-wrap gap-3">
+
+      <h1
+        class="mt-6 text-[2.6rem] leading-[1.02] font-semibold tracking-[-0.03em] text-white sm:text-6xl lg:text-[4.2rem]"
+      >
+        We don't say it.<br />
+        <span class="bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">We show you.</span>
+      </h1>
+
+      <p class="mt-7 max-w-md text-lg leading-relaxed text-white/50">
+        Local growth for {site.city} businesses — measured, and proven with the numbers behind it.
+      </p>
+
+      <div class="mt-10 flex flex-wrap items-center gap-3">
         <a
           href={url('/case-studies/')}
-          class="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-neutral-200"
+          class="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-black transition-colors hover:bg-white/85"
         >
-          See the results <Icon name="arrow" class="size-4" />
+          See the proof <Icon name="arrow" class="size-4" />
         </a>
         <a
           href={url('/contact/')}
-          class="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-white/60 hover:bg-white/5"
+          class="inline-flex items-center justify-center rounded-full border border-white/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition-colors hover:border-white/60 hover:text-white"
         >
-          Get a free local audit
+          Free local audit
         </a>
       </div>
-      <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-neutral-400">
-        <li class="flex items-center gap-1.5"><Icon name="check" class="size-4 text-good" /> Based in {site.city}</li>
-        <li class="flex items-center gap-1.5"><Icon name="check" class="size-4 text-good" /> Monthly proof reports</li>
-        <li class="flex items-center gap-1.5"><Icon name="check" class="size-4 text-good" /> Reply within a day</li>
-      </ul>
     </div>
 
-    <div class="h-[320px] lg:h-[500px]" aria-hidden="true">
-      <SplineScene
-        client:visible
-        scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-        className="h-full w-full"
-      />
+    <div class="h-[300px] lg:h-[560px]" aria-hidden="true">
+      <SplineScene client:visible scene={SCENE} wasmPath={WASM} className="h-full w-full" />
     </div>
   </div>
 </section>
