@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
 import Icon from '../components/Icon.astro';
 import LeadForm from '../components/LeadForm.astro';
 import RevenueChart from '../components/case-study/RevenueChart.astro';
@@ -28,28 +29,13 @@ const steps = [
 
 <Base title={site.name}>
   <!-- Hero -->
-  <section class="container-x grid items-center gap-12 pt-14 pb-20 lg:grid-cols-[1.05fr_1fr] lg:pt-20">
-    <div>
-      <p class="eyebrow">Digital marketing · {site.city}</p>
-      <h1 class="mt-4 text-4xl leading-[1.08] font-extrabold tracking-tight sm:text-5xl lg:text-[3.4rem]">
-        We don't say we grow local businesses. <span class="text-gradient">We show you.</span>
-      </h1>
-      <p class="mt-6 max-w-xl text-lg text-ink-soft">
-        Emporia helps {site.city} businesses get found on Google and turn that visibility into calls, walk-ins and revenue. Every result on this site comes with the original numbers behind it.
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <a href={url('/case-studies/')} class="btn-primary">See the results <Icon name="arrow" class="size-4" /></a>
-        <a href={url('/contact/')} class="btn-secondary">Get a free local audit</a>
-      </div>
-      <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
-        <li class="flex items-center gap-1.5"><Icon name="check" class="size-4 text-good" /> Based in {site.city}</li>
-        <li class="flex items-center gap-1.5"><Icon name="check" class="size-4 text-good" /> Monthly proof reports</li>
-        <li class="flex items-center gap-1.5"><Icon name="check" class="size-4 text-good" /> Reply within a day</li>
-      </ul>
-    </div>
+  <Hero />
 
-    {
-      featured && (
+  <!-- Latest proof -->
+  {
+    featured && (
+      <section class="container-x py-16">
+        <p class="eyebrow mb-6">Latest proof</p>
         <a href={url(`/case-studies/${featured.id}/`)} class="card group block p-6 shadow-xl shadow-ink/5 sm:p-7">
           <div class="flex items-center justify-between text-xs text-muted">
             <span class="font-semibold text-ink">{featured.data.client}</span>
@@ -70,9 +56,9 @@ const steps = [
           </span>
           {featured.data.sample && <p class="mt-4 rounded-lg bg-warn-tint px-3 py-2 text-xs font-medium text-warn">Sample layout — real client data coming soon</p>}
         </a>
-      )
-    }
-  </section>
+      </section>
+    )
+  }
 
   <!-- Principles -->
   <section class="border-y border-line bg-mist py-16">
