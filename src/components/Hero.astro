@@ -1,0 +1,53 @@
+---
+// NOTE: the Spline scene below is a public demo asset (prod.spline.design demo
+// scene), used as a placeholder. Swap it for an Emporia-branded scene before
+// launch.
+import { site } from '../config/site';
+import { url } from '../lib/url';
+import Icon from './Icon.astro';
+import { SplineScene } from './ui/splite';
+import { Spotlight } from './ui/spotlight';
+---
+
+<section class="relative overflow-hidden bg-ink">
+  <Spotlight client:idle className="-top-40 left-0 md:left-60 md:-top-20" />
+  <div class="container-x grid items-center gap-12 py-20 lg:grid-cols-2">
+    <div class="order-2 lg:order-1">
+      <p class="eyebrow text-brand-sky">Digital marketing · {site.city}</p>
+      <h1 class="mt-4 text-4xl leading-[1.08] font-extrabold tracking-tight sm:text-5xl lg:text-[3.4rem]">
+        We don't say we grow local businesses.{' '}
+        <span class="bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text text-transparent">We show you.</span>
+      </h1>
+      <p class="mt-6 max-w-xl text-lg text-neutral-300">
+        Emporia helps {site.city} businesses get found on Google and turn that visibility into calls, walk-ins and revenue. Every result on this site comes with the original numbers behind it.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a
+          href={url('/case-studies/')}
+          class="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-neutral-200"
+        >
+          See the results <Icon name="arrow" class="size-4" />
+        </a>
+        <a
+          href={url('/contact/')}
+          class="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-white/60 hover:bg-white/5"
+        >
+          Get a free local audit
+        </a>
+      </div>
+      <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-neutral-400">
+        <li class="flex items-center gap-1.5"><Icon name="check" class="size-4 text-good" /> Based in {site.city}</li>
+        <li class="flex items-center gap-1.5"><Icon name="check" class="size-4 text-good" /> Monthly proof reports</li>
+        <li class="flex items-center gap-1.5"><Icon name="check" class="size-4 text-good" /> Reply within a day</li>
+      </ul>
+    </div>
+
+    <div class="order-1 h-[320px] lg:order-2 lg:h-[500px]">
+      <SplineScene
+        client:visible
+        scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+        className="h-full w-full"
+      />
+    </div>
+  </div>
+</section>
