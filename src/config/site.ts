@@ -12,9 +12,9 @@ export const site = {
   country: 'IN',
 
   contact: {
-    phoneDisplay: '+91 00000 00000', // TODO: real phone number
-    phoneE164: '+910000000000', // TODO: same number in +91XXXXXXXXXX format
-    whatsapp: '910000000000', // TODO: WhatsApp number, digits only, with country code
+    phoneDisplay: '+91 96251 46067',
+    phoneE164: '+919625146067',
+    whatsapp: '919625146067',
     email: 'hello@example.com', // TODO: real email address
   },
 
@@ -39,6 +39,9 @@ export const site = {
   web3formsKey: 'TODO_WEB3FORMS_ACCESS_KEY',
 
   whatsappMessage: 'Hi Emporia, I found you on your website and would like to discuss growing my business.',
+
+  /** Prefilled WhatsApp text for the free website audit offer. */
+  auditMessage: 'Hi Emporia, I would like a free audit of my website and Google listing.',
 } as const;
 
 export const industries = [

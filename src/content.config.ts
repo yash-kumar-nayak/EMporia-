@@ -55,6 +55,37 @@ const caseStudies = defineCollection({
         .object({ quote: z.string(), name: z.string(), role: z.string(), photo: image().optional() })
         .optional(),
       reportPdf: z.string().optional(),
+
+      /** "How to read this" — what the supplied evidence does NOT prove. Shown prominently. */
+      limits: z.array(z.string()).default([]),
+
+      /** Charts rendered from the client's own reporting.
+       *  bars  — one value per row (monthly totals, per-programme totals)
+       *  ranks — a before/after pair per row (search position moves; lower is better)
+       *  split — parts of a whole (profile action breakdown) */
+      charts: z
+        .array(
+          z.object({
+            type: z.enum(['bars', 'ranks', 'split']),
+            title: z.string(),
+            source: z.string(),
+            note: z.string().optional(),
+            unit: z.string().optional(),
+            lowerIsBetter: z.boolean().default(false),
+            data: z
+              .array(
+                z.object({
+                  label: z.string(),
+                  value: z.number().optional(),
+                  before: z.number().optional(),
+                  after: z.number().optional(),
+                  note: z.string().optional(),
+                }),
+              )
+              .min(1),
+          }),
+        )
+        .default([]),
     }),
 });
 

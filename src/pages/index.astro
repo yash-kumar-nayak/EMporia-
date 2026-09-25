@@ -34,7 +34,7 @@ const steps = [
   <!-- Latest proof -->
   {
     featured && (
-      <section class="container-x py-16">
+      <section class="reveal reveal-up container-x py-16">
         <p class="eyebrow mb-6">Latest proof</p>
         <a href={url(`/case-studies/${featured.id}/`)} class="card group block p-6 shadow-xl shadow-ink/5 sm:p-7">
           <div class="flex items-center justify-between text-xs text-muted">
@@ -61,7 +61,7 @@ const steps = [
   }
 
   <!-- Principles -->
-  <section class="border-y border-line bg-mist py-16">
+  <section class="reveal reveal-up border-y border-line bg-mist py-16">
     <div class="container-x">
       <div class="flex items-center gap-2 text-brand"><Icon name="shield" class="size-5" /><p class="eyebrow">How we prove our work</p></div>
       <h2 class="mt-3 max-w-2xl text-3xl font-bold tracking-tight">What we show you is exactly what the client sees.</h2>
@@ -82,7 +82,7 @@ const steps = [
   <!-- Featured case study -->
   {
     featured && (
-      <section class="container-x py-20">
+      <section class="reveal reveal-up container-x py-20">
         <div class="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p class="eyebrow">Featured case study</p>
@@ -105,7 +105,7 @@ const steps = [
   }
 
   <!-- Industries -->
-  <section class="container-x pb-20">
+  <section class="reveal reveal-up container-x pb-20">
     <div class="card grid gap-8 p-8 sm:p-10 lg:grid-cols-[1fr_2fr]">
       <div>
         <p class="eyebrow">Who we work with</p>
@@ -125,7 +125,7 @@ const steps = [
   </section>
 
   <!-- How we work -->
-  <section class="border-y border-line bg-mist py-20">
+  <section class="reveal reveal-up border-y border-line bg-mist py-20">
     <div class="container-x">
       <p class="eyebrow">How we work</p>
       <h2 class="mt-3 max-w-2xl text-3xl font-bold tracking-tight">Simple, and you always know where you stand.</h2>
@@ -168,17 +168,51 @@ const steps = [
     </div>
   </section>
 
+  <!-- Free audit band -->
+  <section class="reveal reveal-up container-x py-20">
+    <div class="relative overflow-hidden rounded-3xl bg-ink px-6 py-12 text-white sm:px-10 sm:py-14">
+      <div class="relative max-w-2xl">
+        <span class="inline-flex items-center rounded-full bg-good px-3 py-1 text-[0.7rem] font-bold tracking-wide uppercase">
+          Free · no commitment
+        </span>
+        <h2 class="mt-5 text-3xl font-bold tracking-tight sm:text-4xl">
+          We'll audit your website and Google listing — free.
+        </h2>
+        <p class="mt-4 text-lg text-white/60">
+          Send us your website on WhatsApp. You'll get back a short, plain-English audit: where you rank on
+          Google Maps today, what's holding your listing back, and which competitors nearby are ahead of you.
+          No pitch deck, no retainer required.
+        </p>
+        <ul class="mt-7 grid gap-2.5 text-sm text-white/70 sm:grid-cols-2">
+          <li class="flex items-center gap-2"><Icon name="check" class="size-4 text-good" /> Your Google Maps ranking, street by street</li>
+          <li class="flex items-center gap-2"><Icon name="check" class="size-4 text-good" /> What's missing from your profile</li>
+          <li class="flex items-center gap-2"><Icon name="check" class="size-4 text-good" /> The competitors outranking you</li>
+          <li class="flex items-center gap-2"><Icon name="check" class="size-4 text-good" /> Reply within a day</li>
+        </ul>
+        <a
+          href={whatsappLink(site.auditMessage)}
+          target="_blank"
+          rel="noopener"
+          class="btn-whatsapp mt-9 !px-6 !py-3.5"
+        >
+          <Icon name="whatsapp" class="size-5" /> Send my website on WhatsApp
+        </a>
+        <p class="num mt-4 text-sm text-white/40">{site.contact.phoneDisplay}</p>
+      </div>
+    </div>
+  </section>
+
   <!-- Lead form -->
-  <section id="audit" class="container-x">
+  <section id="audit" class="reveal reveal-up container-x">
     <div class="grid gap-10 lg:grid-cols-[1fr_1.3fr]">
       <div>
         <p class="eyebrow">Free local audit</p>
         <h2 class="mt-3 text-3xl font-bold tracking-tight">Find out where you stand on Google — free.</h2>
         <p class="mt-4 text-ink-soft">Tell us about your business. We'll send you a short audit of your Google Maps ranking, your profile, and your top competitors nearby.</p>
         <div class="mt-8 space-y-3">
-          <a href={whatsappLink()} target="_blank" rel="noopener" class="flex items-center gap-3 rounded-xl border border-line p-4 hover:border-ink">
+          <a href={whatsappLink(site.auditMessage)} target="_blank" rel="noopener" class="flex items-center gap-3 rounded-xl border border-line p-4 hover:border-ink">
             <span class="flex size-10 items-center justify-center rounded-full bg-[#1faa53] text-white"><Icon name="whatsapp" class="size-5" /></span>
-            <span><span class="block font-semibold">WhatsApp</span><span class="block text-sm text-muted">Message or call us on WhatsApp</span></span>
+            <span><span class="block font-semibold">WhatsApp</span><span class="block text-sm text-muted">Fastest reply — send us your website</span></span>
           </a>
           <a href={telLink} class="flex items-center gap-3 rounded-xl border border-line p-4 hover:border-ink">
             <span class="flex size-10 items-center justify-center rounded-full bg-ink text-white"><Icon name="phone" class="size-5" /></span>

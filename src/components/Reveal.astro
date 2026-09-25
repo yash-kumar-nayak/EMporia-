@@ -1,0 +1,23 @@
+---
+/**
+ * Scroll-reveal wrapper. Content is visible by default (no JS = no hidden content),
+ * then progressively enhanced: the inline script marks the document, which arms the
+ * hidden-until-seen state, and an IntersectionObserver reveals each element once.
+ *
+ * Disabled entirely under prefers-reduced-motion by the CSS in global.css.
+ */
+interface Props {
+  /** Stagger in ms, for siblings revealed together. */
+  delay?: number;
+  /** Direction the element travels in from. */
+  from?: 'up' | 'left' | 'right' | 'scale';
+  class?: string;
+  as?: string;
+}
+const { delay = 0, from = 'up', class: className = '', as = 'div' } = Astro.props;
+const Tag = as as 'div';
+---
+
+<Tag class:list={['reveal', `reveal-${from}`, className]} style={delay ? `--reveal-delay:${delay}ms` : undefined}>
+  <slot />
+</Tag>

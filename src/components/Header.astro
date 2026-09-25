@@ -2,7 +2,8 @@
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import { nav } from '../config/site';
-import { url, telLink } from '../lib/url';
+import { url, telLink, whatsappLink } from '../lib/url';
+import { site } from '../config/site';
 
 const current = Astro.url.pathname;
 const isActive = (href: string) => current.startsWith(url(href));
@@ -33,7 +34,14 @@ const isActive = (href: string) => current.startsWith(url(href));
       <a href={telLink} class="btn-secondary hidden !px-4 !py-2 sm:inline-flex" aria-label="Call Emporia">
         <Icon name="phone" class="size-4" /> Call
       </a>
-      <a href={url('/contact/')} class="btn-primary !px-4 !py-2">Free audit</a>
+      <a
+        href={whatsappLink(site.auditMessage)}
+        target="_blank"
+        rel="noopener"
+        class="btn-primary !px-4 !py-2"
+      >
+        Free audit
+      </a>
       <button
         type="button"
         class="-mr-2 p-2 md:hidden"

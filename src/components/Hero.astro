@@ -3,7 +3,7 @@
 // scene), used as a placeholder. Swap it for an Emporia-branded scene before
 // launch.
 import { site } from '../config/site';
-import { url } from '../lib/url';
+import { url, whatsappLink } from '../lib/url';
 import Icon from './Icon.astro';
 import { SplineScene } from './ui/splite';
 import { Spotlight } from './ui/spotlight';
@@ -42,6 +42,11 @@ const WASM = url('/spline/');
         Local growth for {site.city} businesses — measured, and proven with the numbers behind it.
       </p>
 
+      <p class="mt-6 inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.04] py-2 pr-5 pl-2.5 text-sm text-white/70">
+        <span class="rounded-full bg-good px-2.5 py-1 text-[0.7rem] font-bold tracking-wide text-white uppercase">Free</span>
+        We audit your website and Google listing — no charge, no commitment.
+      </p>
+
       <div class="mt-10 flex flex-wrap items-center gap-3">
         <a
           href={url('/case-studies/')}
@@ -50,10 +55,12 @@ const WASM = url('/spline/');
           See the proof <Icon name="arrow" class="size-4" />
         </a>
         <a
-          href={url('/contact/')}
-          class="inline-flex items-center justify-center rounded-full border border-white/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition-colors hover:border-white/60 hover:text-white"
+          href={whatsappLink(site.auditMessage)}
+          target="_blank"
+          rel="noopener"
+          class="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition-colors hover:border-white/60 hover:text-white"
         >
-          Free local audit
+          <Icon name="whatsapp" class="size-4" /> Get my free audit
         </a>
       </div>
     </div>

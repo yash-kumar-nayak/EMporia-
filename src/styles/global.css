@@ -123,4 +123,59 @@
   to {
     transform: rotate(360deg);
   }
+
+  /* --- Scroll reveal ------------------------------------------------------
+     Content stays visible unless JS has armed the effect, so a failed script
+     never hides copy. Reveal.astro sets data-reveal-ready on <html>. */
+  .reveal {
+    --reveal-delay: 0ms;
+  }
+  [data-reveal-ready] .reveal {
+    opacity: 0;
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay);
+    will-change: opacity, transform;
+  }
+  [data-reveal-ready] .reveal-up {
+    transform: translateY(18px);
+  }
+  [data-reveal-ready] .reveal-left {
+    transform: translateX(-20px);
+  }
+  [data-reveal-ready] .reveal-right {
+    transform: translateX(20px);
+  }
+  [data-reveal-ready] .reveal-scale {
+    transform: scale(0.97);
+  }
+  [data-reveal-ready] .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Bars and rank markers grow only once their chart is revealed. */
+  .chart-grow {
+    transform-origin: left center;
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  [data-reveal-ready] .reveal:not(.is-visible) .chart-grow {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal-ready] .reveal,
+  [data-reveal-ready] .reveal.is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .chart-grow,
+  [data-reveal-ready] .reveal:not(.is-visible) .chart-grow {
+    transform: none !important;
+    transition: none !important;
+  }
 }
