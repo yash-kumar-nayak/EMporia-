@@ -22,10 +22,10 @@ const WASM = url('/spline/');
     island to hydrate first. */}
 <link rel="preload" as="fetch" href={SCENE} crossorigin />
 
-<section class="hero-dark relative flex min-h-[calc(100svh-65px)] items-center overflow-hidden bg-black">
+<section class="hero-dark relative flex min-h-svh items-center overflow-hidden bg-black">
   <Spotlight client:idle size={620} fill="white" className="opacity-40" />
 
-  <div class="container-x grid w-full items-center gap-10 py-16 lg:grid-cols-[1.05fr_1fr] lg:gap-8">
+  <div class="container-x grid w-full items-center gap-10 pt-28 pb-16 lg:grid-cols-[1.05fr_1fr] lg:gap-8">
     <div>
       <p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">
         Digital marketing · {site.city}

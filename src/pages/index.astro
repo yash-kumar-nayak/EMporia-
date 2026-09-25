@@ -27,7 +27,7 @@ const steps = [
 ];
 ---
 
-<Base title={site.name}>
+<Base title={site.name} bleed>
   <!-- Hero -->
   <Hero />
 
@@ -197,7 +197,7 @@ const steps = [
         >
           <Icon name="whatsapp" class="size-5" /> Send my website on WhatsApp
         </a>
-        <p class="num mt-4 text-sm text-white/40">{site.contact.phoneDisplay}</p>
+        <p class="num mt-4 text-sm text-white/40">WhatsApp {site.contact.whatsappDisplay} · Call {site.contact.phoneDisplay}</p>
       </div>
     </div>
   </section>

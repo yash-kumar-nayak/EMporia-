@@ -12,10 +12,12 @@ interface Props {
   description?: string;
   image?: string;
   noindex?: boolean;
+  /** Set on pages whose first section is designed to run under the floating nav. */
+  bleed?: boolean;
   schema?: Record<string, unknown>[];
 }
 
-const { title, description = site.description, image = '/og-default.png', noindex = false, schema = [] } = Astro.props;
+const { title, description = site.description, image = '/og-default.png', noindex = false, bleed = false, schema = [] } = Astro.props;
 const fullTitle = title === site.name ? `${site.name} — Digital Marketing Agency in ${site.city}` : `${title} | ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(url(image), Astro.site).href;
@@ -79,7 +81,7 @@ const business = {
   <body class="flex min-h-screen flex-col">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2">Skip to content</a>
     <Header />
-    <main id="main" class="flex-1">
+    <main id="main" class:list={['flex-1', !bleed && 'pt-20']}>
       <slot />
     </main>
     <Footer />

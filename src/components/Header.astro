@@ -9,63 +9,78 @@ const current = Astro.url.pathname;
 const isActive = (href: string) => current.startsWith(url(href));
 ---
 
-<header class="sticky top-0 z-40 border-b border-line/80 bg-white/90 backdrop-blur">
-  <div class="container-x flex h-16 items-center justify-between gap-4">
-    <a href={url('/')} aria-label="Emporia home"><Logo /></a>
+{/* Floating glass pill, fixed so it sits OVER the content rather than on a strip of
+    page background — which is what makes the blur read as glass. Pages other than the
+    homepage get matching top padding from Base.astro via the `header-offset` class. */}
+<header class="fixed inset-x-0 top-0 z-40 pt-3">
+  <div class="container-x">
+    <div
+      class="flex h-13 items-center justify-between gap-3 rounded-2xl border border-white/10 bg-ink/85 px-3 shadow-lg shadow-black/10 backdrop-blur-xl backdrop-saturate-150 sm:px-4"
+    >
+      <a href={url('/')} aria-label="Emporia home" class="shrink-0 rounded-lg px-1"><Logo onDark class="h-7 w-auto" /></a>
 
-    <nav class="hidden items-center gap-7 md:flex" aria-label="Main">
-      {
-        nav.map((item) => (
-          <a
-            href={url(item.href)}
-            class:list={[
-              'text-sm font-medium transition-colors hover:text-ink',
-              isActive(item.href) ? 'text-ink' : 'text-muted',
-            ]}
-            aria-current={isActive(item.href) ? 'page' : undefined}
-          >
-            {item.label}
-          </a>
-        ))
-      }
+      <nav class="hidden items-center gap-1 md:flex" aria-label="Main">
+        {
+          nav.map((item) => (
+            <a
+              href={url(item.href)}
+              class:list={[
+                'rounded-lg px-3 py-1.5 text-[0.82rem] font-medium transition-colors',
+                isActive(item.href) ? 'bg-white/12 text-white' : 'text-white/60 hover:bg-white/8 hover:text-white',
+              ]}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="flex items-center gap-1.5">
+        <a
+          href={telLink}
+          class="hidden items-center gap-1.5 rounded-full border border-white/20 px-3 py-1.5 text-[0.82rem] font-medium text-white/80 transition-colors hover:border-white/45 hover:text-white sm:inline-flex"
+          aria-label="Call Emporia"
+        >
+          <Icon name="phone" class="size-3.5" /> Call
+        </a>
+        <a
+          href={whatsappLink(site.auditMessage)}
+          target="_blank"
+          rel="noopener"
+          class="rounded-full bg-white px-3.5 py-1.5 text-[0.82rem] font-semibold text-ink transition-colors hover:bg-white/85"
+        >
+          Free audit
+        </a>
+        <button
+          type="button"
+          class="-mr-1 rounded-lg p-1.5 text-white/80 transition-colors hover:text-white md:hidden"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="mobile-nav"
+          data-menu-toggle
+        >
+          <Icon name="menu" class="size-5" />
+        </button>
+      </div>
+    </div>
+
+    <nav
+      id="mobile-nav"
+      class="mt-2 hidden overflow-hidden rounded-2xl border border-white/15 bg-ink/75 backdrop-blur-xl md:hidden"
+      aria-label="Mobile"
+    >
+      <div class="flex flex-col p-2">
+        {
+          nav.map((item) => (
+            <a href={url(item.href)} class="rounded-lg px-3 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white">
+              {item.label}
+            </a>
+          ))
+        }
+      </div>
     </nav>
-
-    <div class="flex items-center gap-2">
-      <a href={telLink} class="btn-secondary hidden !px-4 !py-2 sm:inline-flex" aria-label="Call Emporia">
-        <Icon name="phone" class="size-4" /> Call
-      </a>
-      <a
-        href={whatsappLink(site.auditMessage)}
-        target="_blank"
-        rel="noopener"
-        class="btn-primary !px-4 !py-2"
-      >
-        Free audit
-      </a>
-      <button
-        type="button"
-        class="-mr-2 p-2 md:hidden"
-        aria-label="Open menu"
-        aria-expanded="false"
-        aria-controls="mobile-nav"
-        data-menu-toggle
-      >
-        <Icon name="menu" class="size-6" />
-      </button>
-    </div>
   </div>
-
-  <nav id="mobile-nav" class="hidden border-t border-line bg-white md:hidden" aria-label="Mobile">
-    <div class="container-x flex flex-col py-2">
-      {
-        nav.map((item) => (
-          <a href={url(item.href)} class="border-b border-line py-3 text-base font-medium last:border-0">
-            {item.label}
-          </a>
-        ))
-      }
-    </div>
-  </nav>
 </header>
 
 <script>

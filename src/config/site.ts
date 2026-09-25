@@ -12,9 +12,11 @@ export const site = {
   country: 'IN',
 
   contact: {
+    // Calls go to one number, WhatsApp chats to another.
     phoneDisplay: '+91 96251 46067',
+    whatsappDisplay: '+91 85430 96668',
     phoneE164: '+919625146067',
-    whatsapp: '919625146067',
+    whatsapp: '918543096668', // +91 85430 96668
     email: 'hello@example.com', // TODO: real email address
   },
 
