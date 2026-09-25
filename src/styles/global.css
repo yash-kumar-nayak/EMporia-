@@ -94,4 +94,26 @@
   .prose-emporia a {
     @apply font-medium text-brand underline underline-offset-2;
   }
+  .loader {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-top-color: rgba(255, 255, 255, 0.9);
+    animation: loader-spin 0.8s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .loader {
+      animation: none;
+      border-top-color: rgba(255, 255, 255, 0.25);
+      border-right-color: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
