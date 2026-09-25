@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../config/site';
+
+const updated = '25 September 2026';
+---
+
+<Base title="Privacy Policy" description={`How ${site.name} handles the information you share with us.`}>
+  <section class="container-x max-w-3xl pt-14">
+    <h1 class="text-4xl font-extrabold tracking-tight">Privacy policy</h1>
+    <p class="mt-3 text-sm text-muted">Last updated {updated}</p>
+    <div class="prose-emporia mt-10">
+      <h2>What we collect</h2>
+      <p>When you fill in our contact form we collect the details you enter: your name, phone number, business name, email (if given), industry, area and message. If you contact us on WhatsApp, by phone or by email, we receive the details that come with that message.</p>
+      <h2>How we use it</h2>
+      <p>Only to reply to your enquiry and, if you become a client, to deliver our services. We do not sell or share your details with anyone for marketing.</p>
+      <h2>Who processes it</h2>
+      <p>Form submissions are delivered to our inbox by Web3Forms. The website is hosted on GitHub Pages. The map on our contact page is provided by Google Maps.</p>
+      <h2>Your choices</h2>
+      <p>You can ask us to see, correct or delete the information we hold about you at any time by emailing <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.</p>
+      <h2>Client data in case studies</h2>
+      <p>We only publish client names, figures and screenshots with the client's permission. Personal details of their customers are always hidden.</p>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,71 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { nav } from '../config/site';
+import { url, telLink } from '../lib/url';
+
+const current = Astro.url.pathname;
+const isActive = (href: string) => current.startsWith(url(href));
+---
+
+<header class="sticky top-0 z-40 border-b border-line/80 bg-white/90 backdrop-blur">
+  <div class="container-x flex h-16 items-center justify-between gap-4">
+    <a href={url('/')} aria-label="Emporia home"><Logo /></a>
+
+    <nav class="hidden items-center gap-7 md:flex" aria-label="Main">
+      {
+        nav.map((item) => (
+          <a
+            href={url(item.href)}
+            class:list={[
+              'text-sm font-medium transition-colors hover:text-ink',
+              isActive(item.href) ? 'text-ink' : 'text-muted',
+            ]}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href={telLink} class="btn-secondary hidden !px-4 !py-2 sm:inline-flex" aria-label="Call Emporia">
+        <Icon name="phone" class="size-4" /> Call
+      </a>
+      <a href={url('/contact/')} class="btn-primary !px-4 !py-2">Free audit</a>
+      <button
+        type="button"
+        class="-mr-2 p-2 md:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        data-menu-toggle
+      >
+        <Icon name="menu" class="size-6" />
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-nav" class="hidden border-t border-line bg-white md:hidden" aria-label="Mobile">
+    <div class="container-x flex flex-col py-2">
+      {
+        nav.map((item) => (
+          <a href={url(item.href)} class="border-b border-line py-3 text-base font-medium last:border-0">
+            {item.label}
+          </a>
+        ))
+      }
+    </div>
+  </nav>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.getElementById('mobile-nav');
+  btn?.addEventListener('click', () => {
+    const open = menu?.classList.toggle('hidden') === false;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  });
+</script>

@@ -1,0 +1,23 @@
+---
+interface Props {
+  metrics: { label: string; before: string; after: string; change?: string; source: string }[];
+}
+const { metrics } = Astro.props;
+---
+
+<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+  {
+    metrics.map((m) => (
+      <div class="card flex flex-col p-5">
+        <p class="text-sm font-medium text-muted">{m.label}</p>
+        <div class="num mt-3 flex items-baseline gap-2">
+          <span class="text-lg text-muted line-through decoration-1">{m.before}</span>
+          <span class="text-muted">→</span>
+          <span class="text-2xl font-bold tracking-tight">{m.after}</span>
+        </div>
+        {m.change && <p class="mt-2 w-fit rounded-full bg-good-tint px-2.5 py-0.5 text-xs font-semibold text-good">{m.change}</p>}
+        <p class="mt-auto pt-4 text-xs text-muted">Source: {m.source}</p>
+      </div>
+    ))
+  }
+</div>

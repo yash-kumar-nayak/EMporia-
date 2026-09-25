@@ -1,0 +1,49 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { site, nav, services } from '../config/site';
+import { url, telLink, mailLink, whatsappLink } from '../lib/url';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-line bg-mist">
+  <div class="container-x grid gap-10 py-14 md:grid-cols-4">
+    <div class="md:col-span-1">
+      <Logo />
+      <p class="mt-4 max-w-xs text-sm text-muted">{site.tagline}. A digital marketing agency for local businesses in {site.city}.</p>
+    </div>
+
+    <div>
+      <h2 class="text-sm font-semibold">Company</h2>
+      <ul class="mt-4 space-y-2 text-sm text-muted">
+        {nav.map((n) => <li><a class="hover:text-ink" href={url(n.href)}>{n.label}</a></li>)}
+        <li><a class="hover:text-ink" href={url('/areas/ghaziabad/')}>Digital marketing in Ghaziabad</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-sm font-semibold">Services</h2>
+      <ul class="mt-4 space-y-2 text-sm text-muted">
+        {services.map((s) => <li><a class="hover:text-ink" href={url(`/services/#${s.slug}`)}>{s.title}</a></li>)}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-sm font-semibold">Talk to us</h2>
+      <ul class="mt-4 space-y-3 text-sm text-muted">
+        <li><a class="flex items-center gap-2 hover:text-ink" href={whatsappLink()} target="_blank" rel="noopener"><Icon name="whatsapp" class="size-4" /> WhatsApp</a></li>
+        <li><a class="flex items-center gap-2 hover:text-ink" href={telLink}><Icon name="phone" class="size-4" /> {site.contact.phoneDisplay}</a></li>
+        <li><a class="flex items-center gap-2 hover:text-ink" href={mailLink}><Icon name="mail" class="size-4" /> {site.contact.email}</a></li>
+        <li class="flex items-start gap-2"><Icon name="pin" class="mt-0.5 size-4 shrink-0" /> <span>{site.address.street}, {site.address.locality}, {site.address.region} {site.address.postalCode}</span></li>
+        <li class="flex items-center gap-2"><Icon name="clock" class="size-4" /> {site.hours}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-line">
+    <div class="container-x flex flex-col gap-2 py-6 text-xs text-muted sm:flex-row sm:justify-between">
+      <p>© {year} {site.legalName}. All rights reserved.</p>
+      <a class="hover:text-ink" href={url('/privacy/')}>Privacy policy</a>
+    </div>
+  </div>
+</footer>

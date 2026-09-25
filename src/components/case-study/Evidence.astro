@@ -1,0 +1,40 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Icon from '../Icon.astro';
+
+interface Props {
+  items: { image?: ImageMetadata; caption: string; source: string; period: string; redactions: string }[];
+}
+const { items } = Astro.props;
+---
+
+<div class="grid gap-5 md:grid-cols-2">
+  {
+    items.map((e) => (
+      <figure class="card overflow-hidden">
+        {e.image ? (
+          <a href={e.image.src} target="_blank" rel="noopener" class="block bg-mist" title="Open full-size screenshot">
+            <Image src={e.image} alt={`${e.caption} — screenshot from ${e.source}, ${e.period}`} class="h-auto w-full" widths={[600, 1200]} sizes="(min-width: 768px) 560px, 100vw" />
+          </a>
+        ) : (
+          <div class="flex aspect-[16/10] flex-col items-center justify-center gap-2 bg-mist text-center text-sm text-muted">
+            <Icon name="file" class="size-7" />
+            Screenshot to be added
+          </div>
+        )}
+        <figcaption class="space-y-2 p-5">
+          <p class="font-semibold">{e.caption}</p>
+          <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
+            <dt class="text-muted">Source</dt>
+            <dd>{e.source}</dd>
+            <dt class="text-muted">Period</dt>
+            <dd>{e.period}</dd>
+            <dt class="text-muted">Edits</dt>
+            <dd>{e.redactions}</dd>
+          </dl>
+        </figcaption>
+      </figure>
+    ))
+  }
+</div>
